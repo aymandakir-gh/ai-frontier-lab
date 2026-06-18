@@ -13,7 +13,10 @@ tags:
   - browsing
   - tools
 updated: '2026-06-18'
-related: []
+related:
+  - agent-reliability-tool-use
+  - agent-goal-drift-long-horizon
+  - agent-reliability-error-compounding
 ---
 
 ## Problem

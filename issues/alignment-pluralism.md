@@ -13,7 +13,10 @@ tags:
   - pluralism
   - alignment
 updated: '2026-06-18'
-related: []
+related:
+  - alignment-deceptive-alignment
+  - alignment-goal-misgeneralization
+  - alignment-scalable-oversight
 ---
 
 ## Problem

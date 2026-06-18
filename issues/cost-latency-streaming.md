@@ -13,7 +13,10 @@ tags:
   - streaming
   - serving
 updated: '2026-06-18'
-related: []
+related:
+  - cost-inference-economics
+  - cost-agentic-token-explosion
+  - cost-energy-footprint
 ---
 
 ## Problem

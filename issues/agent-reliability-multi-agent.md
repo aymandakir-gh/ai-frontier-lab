@@ -13,7 +13,10 @@ tags:
   - coordination
   - agents
 updated: '2026-06-18'
-related: []
+related:
+  - multi-agent-coordination-failure
+  - agent-goal-drift-long-horizon
+  - agent-reliability-error-compounding
 ---
 
 ## Problem

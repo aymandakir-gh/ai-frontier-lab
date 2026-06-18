@@ -13,7 +13,10 @@ tags:
   - confidence
   - uncertainty
 updated: '2026-06-18'
-related: []
+related:
+  - hallucination-factual-fabrication
+  - faithfulness-vs-grounding-in-rag
+  - hallucination-context-conflict
 ---
 
 ## Problem

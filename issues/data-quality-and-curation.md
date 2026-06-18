@@ -13,7 +13,10 @@ tags:
   - curation
   - dedup
 updated: '2026-06-18'
-related: []
+related:
+  - synthetic-data-model-collapse
+  - data-annotation-dependence
+  - data-model-collapse
 ---
 
 ## Problem

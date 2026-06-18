@@ -13,7 +13,10 @@ tags:
   - chain-of-thought
   - interpretability
 updated: '2026-06-18'
-related: []
+related:
+  - reasoning-eval-process-vs-outcome
+  - faithfulness-vs-grounding-in-rag
+  - hallucination-context-conflict
 ---
 
 ## Problem

@@ -14,7 +14,10 @@ tags:
   - permissions
   - security
 updated: '2026-06-18'
-related: []
+related:
+  - security-prompt-injection
+  - security-ml-supply-chain
+  - security-model-extraction
 ---
 
 ## Problem

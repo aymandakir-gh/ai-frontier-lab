@@ -13,7 +13,10 @@ tags:
   - security
   - agents
 updated: '2026-06-18'
-related: []
+related:
+  - security-agent-permissions
+  - security-ml-supply-chain
+  - security-model-extraction
 ---
 
 ## Problem

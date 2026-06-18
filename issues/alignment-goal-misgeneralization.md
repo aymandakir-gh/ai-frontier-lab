@@ -13,7 +13,10 @@ tags:
   - alignment
   - safety
 updated: '2026-06-18'
-related: []
+related:
+  - alignment-deceptive-alignment
+  - alignment-corrigibility
+  - alignment-pluralism
 ---
 
 ## Problem

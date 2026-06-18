@@ -13,7 +13,10 @@ tags:
   - model-collapse
   - data
 updated: '2026-06-18'
-related: []
+related:
+  - synthetic-data-model-collapse
+  - data-annotation-dependence
+  - data-provenance-and-licensing
 ---
 
 ## Problem

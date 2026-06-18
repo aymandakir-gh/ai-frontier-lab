@@ -13,7 +13,10 @@ tags:
   - trojan
   - supply-chain
 updated: '2026-06-18'
-related: []
+related:
+  - security-data-poisoning
+  - security-ml-supply-chain
+  - security-agent-permissions
 ---
 
 ## Problem
