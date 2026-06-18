@@ -1,5 +1,6 @@
-// Client-side catalogue filtering (no dependencies).
-// Category is single-select (with an "All" reset); severity chips toggle.
+// Client-side catalogue search + filtering (no dependencies).
+// Free-text query (title/summary/tags) combines with a single-select category
+// and toggleable severity chips.
 (() => {
   "use strict";
   const cards = Array.from(document.querySelectorAll(".card"));
@@ -7,6 +8,7 @@
   if (!cards.length) return;
 
   let category = "";
+  let query = "";
   const severities = new Set();
 
   function apply() {
@@ -14,11 +16,20 @@
     for (const card of cards) {
       const okCat = !category || card.dataset.category === category;
       const okSev = severities.size === 0 || severities.has(card.dataset.severity);
-      const show = okCat && okSev;
+      const okText = !query || (card.dataset.search || "").includes(query);
+      const show = okCat && okSev && okText;
       card.hidden = !show;
       if (show) visible++;
     }
     if (empty) empty.hidden = visible !== 0;
+  }
+
+  const search = document.getElementById("search");
+  if (search) {
+    search.addEventListener("input", () => {
+      query = search.value.trim().toLowerCase();
+      apply();
+    });
   }
 
   document.querySelectorAll("[data-filter-category]").forEach((btn) => {
