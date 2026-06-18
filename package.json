@@ -12,6 +12,7 @@
     "validate": "tsx scripts/validate.ts",
     "build": "tsx scripts/build.ts",
     "typecheck": "tsc --noEmit",
+    "test": "tsx scripts/test.ts",
     "serve": "node scripts/serve.mjs"
   },
   "dependencies": {

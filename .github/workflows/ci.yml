@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   build:
-    name: typecheck · validate · build
+    name: typecheck · test · validate · build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +22,8 @@ jobs:
       - run: npm ci
       - name: Typecheck
         run: npm run typecheck
+      - name: Test the validator
+        run: npm test
       - name: Validate the /issues data layer
         run: npm run validate
       - name: Build the static site
