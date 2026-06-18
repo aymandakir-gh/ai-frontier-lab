@@ -81,6 +81,7 @@ function splitSections(body: string): Map<string, string> {
 function navLinks(rel: string, active: string): string {
   return [
     ["index.html", "Catalogue"],
+    ["categories.html", "Categories"],
     ["frontier.html", "Frontier 2027+"],
     ["about.html", "About"],
   ]
@@ -131,11 +132,11 @@ function badge(kind: string, value: string, label?: string): string {
   return `<span class="badge badge-${kind} badge-${kind}-${value}">${esc(label ?? value)}</span>`;
 }
 
-function issueCard(i: Issue): string {
+function issueCard(i: Issue, base = ""): string {
   const tags = i.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("");
   return `<article class="card" data-category="${i.category}" data-severity="${i.severity}" data-search="${esc((i.title + " " + i.summary + " " + i.tags.join(" ")).toLowerCase())}">
   <div class="card-meta">${badge("cat", i.category, CATEGORY_LABELS[i.category])}${badge("sev", i.severity)}</div>
-  <h3><a href="issues/${i.id}.html">${esc(i.title)}</a></h3>
+  <h3><a href="${base}issues/${i.id}.html">${esc(i.title)}</a></h3>
   <p>${esc(i.summary)}</p>
   <div class="tags">${tags}</div>
 </article>`;
@@ -156,7 +157,7 @@ function renderIndex(issues: Issue[]): string {
   const cards = issues
     .slice()
     .sort((a, b) => a.title.localeCompare(b.title))
-    .map(issueCard)
+    .map((i) => issueCard(i))
     .join("\n");
 
   return `<section class="hero">
@@ -243,6 +244,43 @@ function renderFrontier(issues: Issue[]): string {
 ${items}`;
 }
 
+function renderCategoryIndex(issues: Issue[]): string {
+  const byCat = new Map<Category, number>();
+  for (const i of issues) byCat.set(i.category, (byCat.get(i.category) ?? 0) + 1);
+  const present = CATEGORIES.filter((c) => byCat.has(c));
+  const cards = present
+    .map(
+      (c) => `<article class="card">
+  <h3><a href="category/${c}.html">${esc(CATEGORY_LABELS[c])}</a></h3>
+  <p class="muted">${byCat.get(c)} ${byCat.get(c) === 1 ? "entry" : "entries"}</p>
+</article>`,
+    )
+    .join("\n");
+  return `<section class="hero">
+  <h1>Browse by category</h1>
+  <p class="lede">The catalogue is organised into ${present.length} problem areas. Pick one to see every entry in it.</p>
+</section>
+<section class="grid">
+${cards}
+</section>`;
+}
+
+function renderCategoryPage(category: Category, entries: Issue[]): string {
+  const cards = entries
+    .slice()
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .map((i) => issueCard(i, "../"))
+    .join("\n");
+  return `<section class="hero">
+  <p class="crumb"><a href="../categories.html">← All categories</a></p>
+  <h1>${esc(CATEGORY_LABELS[category])}</h1>
+  <p class="lede">${entries.length} ${entries.length === 1 ? "entry" : "entries"} in this category.</p>
+</section>
+<section class="grid">
+${cards}
+</section>`;
+}
+
 /** Verify every internal (relative, non-anchor) link in generated HTML resolves. */
 function checkLinks(pages: Array<{ path: string; html: string }>, outputFiles: Set<string>): string[] {
   const errors: string[] = [];
@@ -299,6 +337,18 @@ function main(): void {
     "about.html",
     layout({ title: `About — ${SITE_TITLE}`, description: "How the AI Frontier Lab catalogue is structured.", rel: "", path: "about.html", active: "about.html", body: renderAbout(issues) }),
   );
+  write(
+    "categories.html",
+    layout({ title: `Categories — ${SITE_TITLE}`, description: "Browse catalogued AI problems by category.", rel: "", path: "categories.html", active: "categories.html", body: renderCategoryIndex(issues) }),
+  );
+  for (const c of CATEGORIES) {
+    const inCat = issues.filter((i) => i.category === c);
+    if (!inCat.length) continue;
+    write(
+      `category/${c}.html`,
+      layout({ title: `${CATEGORY_LABELS[c]} — ${SITE_TITLE}`, description: `Catalogued ${CATEGORY_LABELS[c]} problems in AI.`, rel: "../", path: `category/${c}.html`, active: "categories.html", body: renderCategoryPage(c, inCat) }),
+    );
+  }
   for (const i of issues) {
     write(
       `issues/${i.id}.html`,
