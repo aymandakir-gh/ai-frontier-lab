@@ -45,10 +45,33 @@ function esc(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
+/** Split a body into a map of "## Heading" -> markdown under it. */
+function splitSections(body: string): Map<string, string> {
+  const out = new Map<string, string>();
+  let current: string | null = null;
+  let buf: string[] = [];
+  const flush = () => {
+    if (current !== null) out.set(current, buf.join("\n").trim());
+  };
+  for (const line of body.split("\n")) {
+    const m = /^##\s+(.+?)\s*$/.exec(line);
+    if (m) {
+      flush();
+      current = m[1]!;
+      buf = [];
+    } else if (current !== null) {
+      buf.push(line);
+    }
+  }
+  flush();
+  return out;
+}
+
 /** Nav links shared by every page. `rel` is "" at the root, "../" under /issues. */
 function navLinks(rel: string, active: string): string {
   return [
     ["index.html", "Catalogue"],
+    ["frontier.html", "Frontier 2027+"],
     ["about.html", "About"],
   ]
     .map(([href, label]) => `<a href="${rel}${href}"${active === href ? ' aria-current="page"' : ""}>${label}</a>`)
@@ -189,6 +212,26 @@ function renderAbout(issues: Issue[]): string {
 </section>`;
 }
 
+function renderFrontier(issues: Issue[]): string {
+  const items = issues
+    .map((i) => ({ i, watch: splitSections(i.body).get("Watch (2027+)") ?? "" }))
+    .filter((x) => x.watch.length > 0)
+    .sort((a, b) => a.i.title.localeCompare(b.i.title))
+    .map(
+      ({ i, watch }) => `<section class="frontier-item">
+  <div class="card-meta">${badge("cat", i.category, CATEGORY_LABELS[i.category])}</div>
+  <h2><a href="issues/${i.id}.html">${esc(i.title)}</a></h2>
+  <div class="prose">${md.render(watch)}</div>
+</section>`,
+    )
+    .join("\n");
+  return `<section class="hero">
+  <h1>Frontier — what to watch from 2027</h1>
+  <p class="lede">The forward-looking outlook from every entry, gathered in one place: where each problem is likely heading, which bets might pay off, and what would count as real progress.</p>
+</section>
+${items}`;
+}
+
 /** Verify every internal (relative, non-anchor) link in generated HTML resolves. */
 function checkLinks(pages: Array<{ path: string; html: string }>, outputFiles: Set<string>): string[] {
   const errors: string[] = [];
@@ -238,6 +281,10 @@ function main(): void {
     layout({ title: `${SITE_TITLE} — current AI problems`, description: SITE_TAGLINE, rel: "", path: "index.html", active: "index.html", body: renderIndex(issues) }),
   );
   write(
+    "frontier.html",
+    layout({ title: `Frontier 2027+ — ${SITE_TITLE}`, description: "The forward-looking outlook across every catalogued AI problem.", rel: "", path: "frontier.html", active: "frontier.html", body: renderFrontier(issues) }),
+  );
+  write(
     "about.html",
     layout({ title: `About — ${SITE_TITLE}`, description: "How the AI Frontier Lab catalogue is structured.", rel: "", path: "about.html", active: "about.html", body: renderAbout(issues) }),
   );
@@ -259,6 +306,7 @@ function main(): void {
     related: i.related,
     updated: i.updated,
     url: `issues/${i.id}.html`,
+    watch_2027: splitSections(i.body).get("Watch (2027+)") ?? "",
   }));
   writeFileSync(join(outDir, "issues.json"), JSON.stringify({ generated: dataset.length, entries: dataset }, null, 2));
   // Lightweight index for client-side / external search tooling.
