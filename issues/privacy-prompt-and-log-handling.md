@@ -13,7 +13,10 @@ tags:
   - logging
   - retention
 updated: '2026-06-18'
-related: []
+related:
+  - privacy-training-data-extraction
+  - privacy-contextual-leakage
+  - privacy-machine-unlearning
 ---
 
 ## Problem

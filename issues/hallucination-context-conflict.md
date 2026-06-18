@@ -13,7 +13,10 @@ tags:
   - grounding
   - context
 updated: '2026-06-18'
-related: []
+related:
+  - faithfulness-vs-grounding-in-rag
+  - hallucination-factual-fabrication
+  - multimodal-hallucination
 ---
 
 ## Problem

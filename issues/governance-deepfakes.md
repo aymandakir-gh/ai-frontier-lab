@@ -13,7 +13,10 @@ tags:
   - synthetic-media
   - provenance
 updated: '2026-06-18'
-related: []
+related:
+  - governance-content-provenance
+  - governance-accountability
+  - governance-audits-and-standards
 ---
 
 ## Problem

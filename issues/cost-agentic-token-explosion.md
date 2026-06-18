@@ -13,7 +13,10 @@ tags:
   - tokens
   - cost
 updated: '2026-06-18'
-related: []
+related:
+  - cost-energy-footprint
+  - cost-inference-economics
+  - cost-latency-streaming
 ---
 
 ## Problem

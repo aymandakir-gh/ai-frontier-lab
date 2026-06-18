@@ -13,7 +13,10 @@ tags:
   - model-stealing
   - security
 updated: '2026-06-18'
-related: []
+related:
+  - security-agent-permissions
+  - security-ml-supply-chain
+  - security-prompt-injection
 ---
 
 ## Problem

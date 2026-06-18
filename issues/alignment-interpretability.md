@@ -13,7 +13,10 @@ tags:
   - mechanistic
   - transparency
 updated: '2026-06-18'
-related: []
+related:
+  - alignment-bias-and-fairness
+  - alignment-corrigibility
+  - alignment-deceptive-alignment
 ---
 
 ## Problem

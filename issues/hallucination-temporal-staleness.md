@@ -13,7 +13,10 @@ tags:
   - staleness
   - retrieval
 updated: '2026-06-18'
-related: []
+related:
+  - faithfulness-vs-grounding-in-rag
+  - hallucination-context-conflict
+  - hallucination-factual-fabrication
 ---
 
 ## Problem

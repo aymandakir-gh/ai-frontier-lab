@@ -13,7 +13,10 @@ tags:
   - goodhart
   - reward-modeling
 updated: '2026-06-18'
-related: []
+related:
+  - evaluation-agentic-task-eval
+  - evaluation-benchmark-contamination
+  - evaluation-capability-elicitation
 ---
 
 ## Problem

@@ -13,7 +13,10 @@ tags:
   - attention
   - efficiency
 updated: '2026-06-18'
-related: []
+related:
+  - cost-energy-footprint
+  - cost-quantization-tradeoffs
+  - cost-agentic-token-explosion
 ---
 
 ## Problem

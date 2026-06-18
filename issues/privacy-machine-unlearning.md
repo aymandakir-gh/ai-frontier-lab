@@ -13,7 +13,10 @@ tags:
   - gdpr
   - deletion
 updated: '2026-06-18'
-related: []
+related:
+  - privacy-contextual-leakage
+  - privacy-membership-inference
+  - privacy-prompt-and-log-handling
 ---
 
 ## Problem

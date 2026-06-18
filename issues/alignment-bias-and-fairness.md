@@ -13,7 +13,10 @@ tags:
   - fairness
   - discrimination
 updated: '2026-06-18'
-related: []
+related:
+  - alignment-corrigibility
+  - alignment-deceptive-alignment
+  - alignment-goal-misgeneralization
 ---
 
 ## Problem

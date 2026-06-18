@@ -13,7 +13,10 @@ tags:
   - generalization
   - robustness
 updated: '2026-06-18'
-related: []
+related:
+  - shortcut-learning-spurious-correlations
+  - robustness-adversarial-inputs
+  - robustness-multilingual-disparity
 ---
 
 ## Problem

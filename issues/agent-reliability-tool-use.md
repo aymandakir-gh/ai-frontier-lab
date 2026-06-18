@@ -13,7 +13,10 @@ tags:
   - tools
   - function-calling
 updated: '2026-06-18'
-related: []
+related:
+  - agent-reliability-web-browsing
+  - agent-goal-drift-long-horizon
+  - agent-reliability-error-compounding
 ---
 
 ## Problem

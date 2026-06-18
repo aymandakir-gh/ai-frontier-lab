@@ -13,7 +13,10 @@ tags:
   - standards
   - governance
 updated: '2026-06-18'
-related: []
+related:
+  - governance-accountability
+  - governance-content-provenance
+  - governance-open-vs-closed
 ---
 
 ## Problem

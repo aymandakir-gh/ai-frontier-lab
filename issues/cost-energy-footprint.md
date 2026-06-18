@@ -13,7 +13,10 @@ tags:
   - environment
   - efficiency
 updated: '2026-06-18'
-related: []
+related:
+  - cost-long-context
+  - cost-quantization-tradeoffs
+  - cost-agentic-token-explosion
 ---
 
 ## Problem

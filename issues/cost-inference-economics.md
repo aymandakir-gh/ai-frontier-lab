@@ -13,7 +13,10 @@ tags:
   - serving
   - economics
 updated: '2026-06-18'
-related: []
+related:
+  - cost-latency-streaming
+  - cost-agentic-token-explosion
+  - cost-energy-footprint
 ---
 
 ## Problem

@@ -13,7 +13,10 @@ tags:
   - copyright
   - data
 updated: '2026-06-18'
-related: []
+related:
+  - data-annotation-dependence
+  - data-model-collapse
+  - data-quality-and-curation
 ---
 
 ## Problem

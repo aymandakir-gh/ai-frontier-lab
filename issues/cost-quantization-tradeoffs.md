@@ -13,7 +13,10 @@ tags:
   - efficiency
   - accuracy
 updated: '2026-06-18'
-related: []
+related:
+  - cost-energy-footprint
+  - cost-long-context
+  - cost-agentic-token-explosion
 ---
 
 ## Problem
