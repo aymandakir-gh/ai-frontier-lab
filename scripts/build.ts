@@ -31,6 +31,7 @@ const outDir = join(root, "dist");
 const SITE_TITLE = "AI Frontier Lab";
 const SITE_TAGLINE = "A living, open catalogue of real, current AI problems.";
 const REPO_URL = "https://github.com/aymandakir-gh/ai-frontier-lab";
+const SITE_URL = "https://aymandakir-gh.github.io/ai-frontier-lab";
 
 const md = new MarkdownIt({ html: false, linkify: true, typographer: true }).use(anchor, {
   permalink: anchor.permalink.headerLink(),
@@ -54,8 +55,9 @@ function navLinks(rel: string, active: string): string {
     .join("");
 }
 
-function layout(opts: { title: string; description: string; rel: string; body: string; active?: string }): string {
+function layout(opts: { title: string; description: string; rel: string; path: string; body: string; active?: string }): string {
   const base = opts.rel;
+  const canonical = `${SITE_URL}/${opts.path}`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -63,6 +65,15 @@ function layout(opts: { title: string; description: string; rel: string; body: s
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(opts.title)}</title>
 <meta name="description" content="${esc(opts.description)}">
+<link rel="canonical" href="${esc(canonical)}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${esc(opts.title)}">
+<meta property="og:description" content="${esc(opts.description)}">
+<meta property="og:url" content="${esc(canonical)}">
+<meta property="og:site_name" content="${esc(SITE_TITLE)}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${esc(opts.title)}">
+<meta name="twitter:description" content="${esc(opts.description)}">
 <link rel="stylesheet" href="${base}styles.css">
 </head>
 <body>
@@ -223,16 +234,16 @@ function main(): void {
 
   write(
     "index.html",
-    layout({ title: `${SITE_TITLE} — current AI problems`, description: SITE_TAGLINE, rel: "", active: "index.html", body: renderIndex(issues) }),
+    layout({ title: `${SITE_TITLE} — current AI problems`, description: SITE_TAGLINE, rel: "", path: "index.html", active: "index.html", body: renderIndex(issues) }),
   );
   write(
     "about.html",
-    layout({ title: `About — ${SITE_TITLE}`, description: "How the AI Frontier Lab catalogue is structured.", rel: "", active: "about.html", body: renderAbout(issues) }),
+    layout({ title: `About — ${SITE_TITLE}`, description: "How the AI Frontier Lab catalogue is structured.", rel: "", path: "about.html", active: "about.html", body: renderAbout(issues) }),
   );
   for (const i of issues) {
     write(
       `issues/${i.id}.html`,
-      layout({ title: `${i.title} — ${SITE_TITLE}`, description: i.summary, rel: "../", body: renderIssue(i, byId) }),
+      layout({ title: `${i.title} — ${SITE_TITLE}`, description: i.summary, rel: "../", path: `issues/${i.id}.html`, body: renderIssue(i, byId) }),
     );
   }
 
@@ -253,6 +264,18 @@ function main(): void {
   copyFileSync(join(srcDir, "styles.css"), join(outDir, "styles.css"));
   copyFileSync(join(srcDir, "app.js"), join(outDir, "app.js"));
   writeFileSync(join(outDir, ".nojekyll"), "");
+
+  // Discoverability: a sitemap of every generated page + a permissive robots.txt.
+  const urls = pages
+    .map((p) => `${SITE_URL}/${p.path.replace(outDir + "/", "")}`)
+    .sort()
+    .map((u) => `  <url><loc>${u}</loc></url>`)
+    .join("\n");
+  writeFileSync(
+    join(outDir, "sitemap.xml"),
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+  );
+  writeFileSync(join(outDir, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 
   const outputFiles = new Set<string>();
   listFiles(outDir, outputFiles);
