@@ -46,6 +46,15 @@ function esc(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
+function xmlEsc(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 /** Split a body into a map of "## Heading" -> markdown under it. */
 function splitSections(body: string): Map<string, string> {
   const out = new Map<string, string>();
@@ -98,6 +107,7 @@ function layout(opts: { title: string; description: string; rel: string; path: s
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${esc(opts.title)}">
 <meta name="twitter:description" content="${esc(opts.description)}">
+<link rel="alternate" type="application/atom+xml" title="${esc(SITE_TITLE)}" href="${base}feed.xml">
 <link rel="stylesheet" href="${base}styles.css">
 </head>
 <body>
@@ -341,6 +351,34 @@ function main(): void {
     },
   };
   writeFileSync(join(outDir, "issues.schema.json"), JSON.stringify(schema, null, 2));
+
+  // Atom feed so the "living" catalogue can be followed — most-recently-updated
+  // entries first.
+  const feedEntries = issues.slice().sort((a, b) => b.updated.localeCompare(a.updated));
+  const feedUpdated = `${feedEntries[0]?.updated ?? "2026-01-01"}T00:00:00Z`;
+  const feed = `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>${xmlEsc(SITE_TITLE)}</title>
+  <subtitle>${xmlEsc(SITE_TAGLINE)}</subtitle>
+  <link href="${SITE_URL}/feed.xml" rel="self"/>
+  <link href="${SITE_URL}/"/>
+  <id>${SITE_URL}/</id>
+  <updated>${feedUpdated}</updated>
+${feedEntries
+    .map(
+      (i) => `  <entry>
+    <title>${xmlEsc(i.title)}</title>
+    <link href="${SITE_URL}/issues/${i.id}.html"/>
+    <id>${SITE_URL}/issues/${i.id}.html</id>
+    <updated>${i.updated}T00:00:00Z</updated>
+    <category term="${xmlEsc(i.category)}"/>
+    <summary>${xmlEsc(i.summary)}</summary>
+  </entry>`,
+    )
+    .join("\n")}
+</feed>
+`;
+  writeFileSync(join(outDir, "feed.xml"), feed);
 
   copyFileSync(join(srcDir, "styles.css"), join(outDir, "styles.css"));
   copyFileSync(join(srcDir, "app.js"), join(outDir, "app.js"));
