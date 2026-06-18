@@ -19,6 +19,7 @@ import {
   CATEGORIES,
   CATEGORY_LABELS,
   SEVERITIES,
+  STATUSES,
   type Issue,
   type Category,
 } from "./lib/issues.ts";
@@ -202,7 +203,7 @@ function renderAbout(issues: Issue[]): string {
   <li><strong>Watch (2027+)</strong> — the forward-looking outlook.</li>
 </ul>
 <h2>Data layer</h2>
-<p>The site is generated from <code>/issues/*.md</code>. The full dataset is published as <a href="issues.json">issues.json</a>, so the catalogue is consumable by tools, not just humans. The build refuses to ship if any entry fails its schema, is missing a section, contains a stub marker, or links to something that does not exist.</p>
+<p>The site is generated from <code>/issues/*.md</code>. The full dataset is published as <a href="issues.json">issues.json</a>, and the frontmatter contract is published as a <a href="issues.schema.json">JSON Schema</a> — so the catalogue is consumable and validatable by tools, not just humans. The build refuses to ship if any entry fails its schema, is missing a section, contains a stub marker, or links to something that does not exist.</p>
 <h2>Categories</h2>
 <ul>${CATEGORIES.map((c) => `<li>${esc(CATEGORY_LABELS[c])}</li>`).join("")}</ul>
 <h2>Contributing</h2>
@@ -316,6 +317,30 @@ function main(): void {
       dataset.map(({ id, title, category, severity, summary, tags, url }) => ({ id, title, category, severity, summary, tags, url })),
     ),
   );
+
+  // Published JSON Schema for an entry's frontmatter — derived from the same
+  // enums the validator uses, so the contract can never drift from the build.
+  const schema = {
+    $schema: "https://json-schema.org/draft/2020-12/schema",
+    $id: `${SITE_URL}/issues.schema.json`,
+    title: "AI Frontier Lab issue frontmatter",
+    description: "Frontmatter contract for one /issues/*.md entry.",
+    type: "object",
+    required: ["id", "title", "category", "severity", "status", "summary", "tags", "updated"],
+    additionalProperties: false,
+    properties: {
+      id: { type: "string", pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+      title: { type: "string", minLength: 1 },
+      category: { enum: [...CATEGORIES] },
+      severity: { enum: [...SEVERITIES] },
+      status: { enum: [...STATUSES] },
+      summary: { type: "string", minLength: 1, maxLength: 240 },
+      tags: { type: "array", minItems: 1, items: { type: "string" } },
+      updated: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" },
+      related: { type: "array", items: { type: "string" } },
+    },
+  };
+  writeFileSync(join(outDir, "issues.schema.json"), JSON.stringify(schema, null, 2));
 
   copyFileSync(join(srcDir, "styles.css"), join(outDir, "styles.css"));
   copyFileSync(join(srcDir, "app.js"), join(outDir, "app.js"));
