@@ -131,6 +131,7 @@ function renderIndex(issues: Issue[]): string {
   <p class="lede">Every entry states the problem, what mitigations exist today, where the open gaps still are, and what to watch from 2027 onward. ${issues.length} entries and counting.</p>
 </section>
 <section class="controls">
+  <input type="search" id="search" placeholder="Search ${issues.length} entries — title, summary, tags…" aria-label="Search entries" autocomplete="off">
   <div class="chips" role="group" aria-label="Filter by category"><button class="chip chip-all is-active" data-filter-category="">All</button>${catChips}</div>
   <div class="chips" role="group" aria-label="Filter by severity">${sevChips}</div>
 </section>
@@ -260,6 +261,13 @@ function main(): void {
     url: `issues/${i.id}.html`,
   }));
   writeFileSync(join(outDir, "issues.json"), JSON.stringify({ generated: dataset.length, entries: dataset }, null, 2));
+  // Lightweight index for client-side / external search tooling.
+  writeFileSync(
+    join(outDir, "search-index.json"),
+    JSON.stringify(
+      dataset.map(({ id, title, category, severity, summary, tags, url }) => ({ id, title, category, severity, summary, tags, url })),
+    ),
+  );
 
   copyFileSync(join(srcDir, "styles.css"), join(outDir, "styles.css"));
   copyFileSync(join(srcDir, "app.js"), join(outDir, "app.js"));
